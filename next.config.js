@@ -1,4 +1,3 @@
-// next.config.js 파일의 내용
 /** @type {import('next').NextConfig} */
 
 const API_KEY = process.env.API_KEY;
@@ -25,5 +24,3 @@ const nextConfig = {
 }
 
 module.exports = nextConfig
-
-// 프론트에서 작동함.

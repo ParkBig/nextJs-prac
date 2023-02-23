@@ -1,8 +1,7 @@
-import Seo from "@/components/Seo";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useEffect, useState } from "react";
+import Seo from "@/components/Seo";
 
-interface Movie {
+interface MovieProps {
   id: number;
   backdrop_path: string;
   original_title: string;
@@ -14,7 +13,7 @@ interface Movie {
 }
 
 const Home = () => {
-  const [movies, setMovies] = useState<Movie[]>();
+  const [movies, setMovies] = useState<MovieProps[]>([]);
   useEffect(() => {
     (async () => {
       const { results } = await (await fetch(`/api/movies`)).json();
@@ -23,13 +22,13 @@ const Home = () => {
   }, []);
   return (
     <div className="container">
-      <Seo title="Home"/>
-      {!movies && <h4>Loading...</h4>}
-      {movies?.map((movie) => (
-        <div className="movie" key={movie.id}>
-          <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
-          <h4>{movie.original_title}</h4>
-        </div>
+      <Seo title="Home" />
+      {!movies ? <h4>Loading...</h4> :
+        movies.map((movie) => (
+          <div className="movie" key={movie.id}>
+            <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
+            <h4>{movie.original_title}</h4>
+          </div>
       ))}
       <style jsx>{`
         .container {
@@ -53,26 +52,7 @@ const Home = () => {
         }
       `}</style>
     </div>
-  )
+  );
 }
 
 export default Home;
-
-// 이 아래의 코드는 무조건 서버에서 돌아간다.
-// 따라서 api요청시 key 노출이 싫을때 아래와 같은 방법으로 사용 가능하다.
-// export const getServerSideProps: GetServerSideProps<{ results: Movie[] }> = async () => {
-//   const res = await fetch(`http://localhost:3000/api/movies`);
-//   const { results } = await res.json();
-//   if (!results) {
-//     return {
-//       props: {
-//         results: null,
-//       },
-//     };
-//   }
-//   return {
-//     props: {
-//       results,
-//     },
-//   };
-// };
